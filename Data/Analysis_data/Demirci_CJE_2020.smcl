@@ -1,0 +1,734 @@
+{smcl}
+{txt}{sf}{ul off}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\chris\OneDrive\Bureau\Author_s_reproduction_package\Data\Analysis_data\Demirci_CJE_2020.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}22 May 2021, 00:26:49
+{txt}
+{com}. 
+. clear
+{txt}
+{com}. use Demirci_CJE_2020.dta  
+{txt}
+{com}. 
+. * The code contains commands that are incompatible with Stata 17 and probably with other versions of Stata. Version 16 is recommended.
+. * "version 16" syntax allows you to use the features of Stata 16
+. version 16
+{txt}
+{com}. 
+. 
+. *
+. *** Generating control variables 
+.         *
+.         * Field of study dummies 
+.         tab field_codes,gen(f_)
+
+     {txt}(mean) {c |}
+field_codes {c |}
+          3 {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+       1103 {c |}{res}      6,691        1.03        1.03
+{txt}       1199 {c |}{res}      2,001        0.31        1.34
+{txt}       1401 {c |}{res}      4,746        0.73        2.07
+{txt}       1501 {c |}{res}      2,606        0.40        2.47
+{txt}       1901 {c |}{res}     20,005        3.07        5.54
+{txt}       2102 {c |}{res}     16,565        2.55        8.09
+{txt}       2399 {c |}{res}    120,621       18.54       26.63
+{txt}       2401 {c |}{res}      1,882        0.29       26.92
+{txt}       2405 {c |}{res}      4,346        0.67       27.58
+{txt}       2406 {c |}{res}      6,540        1.01       28.59
+{txt}       2408 {c |}{res}     17,924        2.75       31.34
+{txt}       2412 {c |}{res}      2,933        0.45       31.79
+{txt}       2414 {c |}{res}     11,095        1.71       33.50
+{txt}       2499 {c |}{res}     11,404        1.75       35.25
+{txt}       2599 {c |}{res}      5,232        0.80       36.06
+{txt}       2601 {c |}{res}      9,019        1.39       37.44
+{txt}       2901 {c |}{res}      5,355        0.82       38.27
+{txt}       3301 {c |}{res}     25,039        3.85       42.11
+{txt}       3401 {c |}{res}      7,445        1.14       43.26
+{txt}       3600 {c |}{res}     20,012        3.08       46.33
+{txt}       3699 {c |}{res}      9,739        1.50       47.83
+{txt}       3700 {c |}{res}     12,480        1.92       49.75
+{txt}       4101 {c |}{res}      5,514        0.85       50.60
+{txt}       4801 {c |}{res}     10,218        1.57       52.17
+{txt}       5000 {c |}{res}      3,750        0.58       52.74
+{txt}       5003 {c |}{res}      7,311        1.12       53.87
+{txt}       5007 {c |}{res}      4,581        0.70       54.57
+{txt}       5098 {c |}{res}      9,014        1.39       55.96
+{txt}       5200 {c |}{res}     40,701        6.26       62.21
+{txt}       5301 {c |}{res}      7,675        1.18       63.39
+{txt}       5401 {c |}{res}     11,820        1.82       65.21
+{txt}       5501 {c |}{res}     14,188        2.18       67.39
+{txt}       5506 {c |}{res}     16,764        2.58       69.97
+{txt}       5507 {c |}{res}     15,793        2.43       72.39
+{txt}       5599 {c |}{res}      4,950        0.76       73.15
+{txt}       6099 {c |}{res}     23,817        3.66       76.81
+{txt}       6107 {c |}{res}     17,847        2.74       79.56
+{txt}       6199 {c |}{res}     21,851        3.36       82.92
+{txt}       6200 {c |}{res}     17,800        2.74       85.65
+{txt}       6201 {c |}{res}     18,966        2.92       88.57
+{txt}       6203 {c |}{res}     29,015        4.46       93.03
+{txt}       6206 {c |}{res}      8,966        1.38       94.40
+{txt}       6207 {c |}{res}     11,277        1.73       96.14
+{txt}       6299 {c |}{res}      9,624        1.48       97.62
+{txt}       6402 {c |}{res}     15,504        2.38      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}    650,626      100.00
+{txt}
+{com}.         
+.         *
+.         *calendar year & academic year dummies
+.         capture drop cyear cy1
+{txt}
+{com}.         gen cyear=year  
+{txt}
+{com}.         forvalues y=9/12 {c -(}    
+{txt}  2{com}.          gen byte cy`y'=0
+{txt}  3{com}.          replace cy`y'=1 if `y'==cyear-2000   
+{txt}  4{com}.         {c )-}
+{txt}(160,870 real changes made)
+(163,054 real changes made)
+(160,358 real changes made)
+(166,344 real changes made)
+
+{com}.         
+.         *
+.         * Age-squared to control for potential experience  
+.         gen age_sqr=age*age
+{txt}
+{com}. 
+.         *
+.         * Gender
+.         gen byte female=0
+{txt}
+{com}.                 replace female=1 if sex==2
+{txt}(373,274 real changes made)
+
+{com}.         gen byte male=0
+{txt}
+{com}.                 replace male=1 if sex==1
+{txt}(277,352 real changes made)
+
+{com}. 
+.         *
+.         * Race/ethnicity ( Non-hispanic whites, Non-hispanic blacks, Non-hispanic asians, Hispanics, Non-hispanic others)
+.         gen byte white=0
+{txt}
+{com}.          replace white=1 if racesing==1 & hispan==0
+{txt}(505,492 real changes made)
+
+{com}.         gen byte black=0
+{txt}
+{com}.          replace black=1 if racesing==2 & hispan==0
+{txt}(44,138 real changes made)
+
+{com}.         gen byte asian=0
+{txt}
+{com}.          replace asian=1 if racesing==4 & hispan==0
+{txt}(61,234 real changes made)
+
+{com}.         gen byte hisp=0
+{txt}
+{com}.          replace hisp=1 if hispan==1
+{txt}(16,080 real changes made)
+
+{com}.         gen byte other=0
+{txt}
+{com}.          replace other=1 if (racesing==3 | racesing==5) & hispan==0     
+{txt}(3,356 real changes made)
+
+{com}.   
+.         *
+.         * For clustering for each level
+.         gen field_by_year=0
+{txt}
+{com}.          replace field_by_year=field_codes*10000+year
+{txt}(650,626 real changes made)
+
+{com}.    
+.         *
+.         * Citizenship
+.         gen byte ntv=0
+{txt}
+{com}.                 replace ntv=1 if citizen==0 | citizen==1 
+{txt}(554,032 real changes made)
+
+{com}.  
+.   
+. *** TABLE 1: Summary statistics for recent graduates
+. ***
+. ***  
+.    gen byte subgroup=0
+{txt}
+{com}.         replace subgroup=1 if eligible==1 & level==2 & age<=24 & school!=2 & ntv==1             // STEM, bachelor's
+{txt}(8,501 real changes made)
+
+{com}.         replace subgroup=2 if eligible==0 & level==2 & age<=24 & school!=2 & ntv==1             // Non-STEM, bachelor's
+{txt}(42,861 real changes made)
+
+{com}. 
+.         replace subgroup=3 if eligible==1 & level==3 & age<=28 & school!=2 & ntv==1             // STEM, master's
+{txt}(3,917 real changes made)
+
+{com}.         replace subgroup=4 if eligible==0 & level==3 & age<=28 & school!=2 & ntv==1             // Non-STEM, master's
+{txt}(17,930 real changes made)
+
+{com}. 
+.         replace subgroup=5 if eligible==1 & level==4 & age<=31 & school!=2 & ntv==1             // STEM, doctorates
+{txt}(1,887 real changes made)
+
+{com}.         replace subgroup=6 if eligible==0 & level==4 & age<=31 & school!=2 & ntv==1             // Non-STEM, doctorates
+{txt}(2,185 real changes made)
+
+{com}.   
+.   gen all=1
+{txt}
+{com}.   gen ryrwage_wagesample=.
+{txt}(650,626 missing values generated)
+
+{com}.    replace ryrwage_wagesample=ryrwage if wage_sample==1
+{txt}(547,544 real changes made)
+
+{com}.   table subgroup, c(N all) 
+
+{txt}{hline 10}{c TT}{hline 11}
+ subgroup {c |}     N(all)
+{hline 10}{c +}{hline 11}
+        0 {c |}    {res}573,345
+        {txt}1 {c |}      {res}8,501
+        {txt}2 {c |}     {res}42,861
+        {txt}3 {c |}      {res}3,917
+        {txt}4 {c |}     {res}17,930
+        {txt}5 {c |}      {res}1,887
+        {txt}6 {c |}      {res}2,185
+{txt}{hline 10}{c BT}{hline 11}
+
+{com}.   table subgroup [pw=perwt], c(mean female mean age)
+
+{txt}{hline 10}{c TT}{hline 41}
+ subgroup {c |}        mean(female)            mean(age)
+{hline 10}{c +}{hline 41}
+        0 {c |}             {res}.560959  43.8713188171386719
+        {txt}1 {c |}             {res}.379484  23.1941986083984375
+        {txt}2 {c |}              {res}.62007  23.1997833251953125
+        {txt}3 {c |}             {res}.440134  26.3341426849365234
+        {txt}4 {c |}             {res}.720116  26.3894214630126953
+        {txt}5 {c |}             {res}.502231  29.0374660491943359
+        {txt}6 {c |}             {res}.662816  28.5936012268066406
+{txt}{hline 10}{c BT}{hline 41}
+
+{com}.   table subgroup [pw=perwt], c(mean white mean asian mean black mean hisp)
+
+{txt}{hline 10}{c TT}{hline 51}
+ subgroup {c |} mean(white)  mean(asian)  mean(black)   mean(hisp)
+{hline 10}{c +}{hline 51}
+        0 {c |}     {res}.741301      .110678      .082013      .025815
+        {txt}1 {c |}     {res}.789782      .071759      .065729      .031152
+        {txt}2 {c |}     {res}.805969      .039398      .077142      .038293
+        {txt}3 {c |}     {res}.798347      .081353       .06745      .021681
+        {txt}4 {c |}      {res}.82812      .031294      .079398      .027444
+        {txt}5 {c |}     {res}.852003      .060707      .042077       .01912
+        {txt}6 {c |}     {res}.836284      .055365      .053573      .018324
+{txt}{hline 10}{c BT}{hline 51}
+
+{com}.   table subgroup [pw=perwt], c(mean employed mean fyft mean ryrwage_wagesample)
+
+{txt}{hline 10}{c TT}{hline 47}
+ subgroup {c |} mean(employed)      mean(fyft)  mean(ryrwag~e)
+{hline 10}{c +}{hline 47}
+        0 {c |}        {res}.801428         .652795        68556.17
+        {txt}1 {c |}         {res}.87554         .593911        29911.72
+        {txt}2 {c |}        {res}.880183         .582181        24074.25
+        {txt}3 {c |}        {res}.931234         .789904        52565.77
+        {txt}4 {c |}        {res}.929035         .763092        40381.91
+        {txt}5 {c |}         {res}.94474         .823641        66020.73
+        {txt}6 {c |}        {res}.936224         .805628        65650.12
+{txt}{hline 10}{c BT}{hline 47}
+
+{com}. 
+. 
+. *** TABLE 2: The percentage of internatioanl students 
+. ***
+. ***    
+.  label define field_agr 2102 "Computer Sciences"
+{txt}
+{com}.  label define field_agr 2408 "Electrical Engr.", add
+{txt}
+{com}.  label define field_agr 2499 "Other Engr.", add
+{txt}
+{com}.  label define field_agr 3700 "Mathematics", add
+{txt}
+{com}.  label define field_agr 3600 "Biology", add
+{txt}
+{com}.  label define field_agr 5000 "Physical Sciences", add
+{txt}
+{com}.  label define field_agr 5599 "Social Sciences", add
+{txt}
+{com}.  label define field_agr 6299 "Business", add
+{txt}
+{com}.  label define field_agr 5200 "Psychology", add 
+{txt}
+{com}.  label define field_agr 5499 "Education", add 
+{txt}
+{com}.  label define field_agr 6199 "Medical Sciences", add 
+{txt}
+{com}.  label define field_agr 9999 "Other", add 
+{txt}
+{com}.  
+.  label values field_agr field_agr
+{txt}
+{com}.  
+.  preserve 
+{txt}
+{com}.  collapse (mean) treat2 classsize_2 treat3 classsize_3 treat4 classsize_4 field_agr, by(level year field_codes)
+{res}{txt}
+{com}.  collapse (sum) treat2 classsize_2 treat3 classsize_3 treat4 classsize_4 , by(level year field_agr)
+{res}{txt}
+{com}.  forvalues l=2/4 {c -(}
+{txt}  2{com}.   gen ratioFB`l'=treat`l'/classsize_`l'
+{txt}  3{com}.  {c )-}
+{txt}
+{com}.  
+.  forvalues l=2/4 {c -(}
+{txt}  2{com}.   table field_agr year if (level==`l'),c(mean ratioFB`l')  
+{txt}  3{com}.  {c )-} 
+
+{txt}{hline 10}{c TT}{hline 39}
+(mean)    {c |}              Census year              
+field_agr {c |}     2009      2010      2011      2012
+{hline 10}{c +}{hline 39}
+     2102 {c |} {res}.0162271   .016657  .0169992  .0159251
+     {txt}2408 {c |} {res}.0204104  .0136484  .0149582  .0193407
+     {txt}2499 {c |} {res}.0108086  .0086933  .0086451   .009461
+     {txt}3600 {c |}  {res}.004674  .0046384  .0049833  .0048985
+     {txt}3700 {c |} {res}.0086595  .0077641  .0104279  .0118734
+     {txt}5000 {c |} {res}.0052222  .0049977   .005563  .0048823
+     {txt}5200 {c |} {res}.0028523  .0028444  .0025405  .0026433
+     {txt}5499 {c |} {res}.0011717   .001129  .0010604  .0009427
+     {txt}5599 {c |} {res}.0068743  .0065975   .006937  .0079988
+     {txt}6199 {c |} {res}.0044197  .0049166  .0046298  .0046384
+     {txt}6299 {c |}  {res}.012992  .0113562  .0122317   .013126
+     {txt}9999 {c |} {res}.0055433  .0052022  .0051627  .0053141
+{txt}{hline 10}{c BT}{hline 39}
+
+{hline 10}{c TT}{hline 39}
+(mean)    {c |}              Census year              
+field_agr {c |}     2009      2010      2011      2012
+{hline 10}{c +}{hline 39}
+     2102 {c |} {res}.1358171  .1567827  .2315158  .2214559
+     {txt}2408 {c |} {res}.1435287  .1812826   .249144  .2135812
+     {txt}2499 {c |} {res}.0726993  .0691093  .0906055   .086349
+     {txt}3600 {c |} {res}.0142435  .0168728  .0218449  .0248312
+     {txt}3700 {c |} {res}.0331786  .0353636  .0389299  .0467555
+     {txt}5000 {c |} {res}.0151445  .0134773  .0168516  .0229728
+     {txt}5200 {c |} {res}.0034992  .0029912  .0031098  .0031905
+     {txt}5499 {c |}  {res}.010038  .0090874  .0095161  .0094366
+     {txt}5599 {c |}  {res}.015069  .0130614  .0128432  .0143795
+     {txt}6199 {c |} {res}.0199574  .0219135  .0217268  .0233816
+     {txt}6299 {c |} {res}.0759181  .0758204  .0819351  .0714518
+     {txt}9999 {c |}   {res}.02731  .0306539  .0323664  .0311602
+{txt}{hline 10}{c BT}{hline 39}
+
+{hline 10}{c TT}{hline 39}
+(mean)    {c |}              Census year              
+field_agr {c |}     2009      2010      2011      2012
+{hline 10}{c +}{hline 39}
+     2102 {c |} {res}.1261574  .1444571  .1084417  .1877793
+     {txt}2408 {c |} {res}.2283605  .1638502  .1883996  .1820667
+     {txt}2499 {c |}  {res}.194091  .1486676   .173401  .2406497
+     {txt}3600 {c |} {res}.0407126  .0380519  .0414193  .0436416
+     {txt}3700 {c |}  {res}.130679  .1232899  .0970716  .1047157
+     {txt}5000 {c |} {res}.0879515  .0756718  .0936722  .0946222
+     {txt}5200 {c |}  {res}.010599  .0096638   .010636  .0138471
+     {txt}5499 {c |} {res}.0584133  .0473168  .0406516  .0675684
+     {txt}5599 {c |} {res}.0412208  .0516381  .0390137  .0420145
+     {txt}6199 {c |} {res}.0248788  .0252281   .023991   .027706
+     {txt}6299 {c |} {res}.0384403  .0280758  .0344037  .0294325
+     {txt}9999 {c |} {res}.0580217  .0536331  .0578004    .05633
+{txt}{hline 10}{c BT}{hline 39}
+
+{com}.  restore
+{txt}
+{com}. 
+.  
+. *** TABLE 3: The effect of international students on Native-Born Recent Graduates at the Master's Level 
+. ***
+. ***
+.  replace ryrwage=ln(ryrwage)
+{txt}(650,626 real changes made, 102,488 to missing)
+
+{com}. 
+. estimates clear
+{txt}
+{com}. quietly {c -(}
+{txt}
+{com}. 
+. 
+. 
+. *** TABLE 4: The effect of international students on Native-Born Experienced Graduates at the Master's Level
+. ***
+. ***
+. estimates clear
+{res}{txt}
+{com}. quietly {c -(}
+{txt}
+{com}. 
+. 
+. 
+. *** TABLE 5: Robustness to the inclusion of measures of labor demand conditions
+. ***
+. ***
+. *
+. * State-Year fixed effects  
+.   gen state_by_year=0
+{txt}
+{com}.         replace state_by_year=state*10000+year
+{txt}(650,626 real changes made)
+
+{com}.   tab state_by_year,gen(StYr_)
+
+{txt}state_by_ye {c |}
+         ar {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+      12009 {c |}{res}      1,902        0.29        0.29
+{txt}      12010 {c |}{res}      2,016        0.31        0.60
+{txt}      12011 {c |}{res}      1,950        0.30        0.90
+{txt}      12012 {c |}{res}      1,964        0.30        1.20
+{txt}      22009 {c |}{res}        270        0.04        1.25
+{txt}      22010 {c |}{res}        290        0.04        1.29
+{txt}      22011 {c |}{res}        274        0.04        1.33
+{txt}      22012 {c |}{res}        238        0.04        1.37
+{txt}      42009 {c |}{res}      2,949        0.45        1.82
+{txt}      42010 {c |}{res}      2,893        0.44        2.27
+{txt}      42011 {c |}{res}      2,983        0.46        2.72
+{txt}      42012 {c |}{res}      3,052        0.47        3.19
+{txt}      52009 {c |}{res}        911        0.14        3.33
+{txt}      52010 {c |}{res}        906        0.14        3.47
+{txt}      52011 {c |}{res}        854        0.13        3.60
+{txt}      52012 {c |}{res}        965        0.15        3.75
+{txt}      62009 {c |}{res}     18,751        2.88        6.63
+{txt}      62010 {c |}{res}     19,246        2.96        9.59
+{txt}      62011 {c |}{res}     19,346        2.97       12.57
+{txt}      62012 {c |}{res}     19,524        3.00       15.57
+{txt}      82009 {c |}{res}      3,427        0.53       16.09
+{txt}      82010 {c |}{res}      3,446        0.53       16.62
+{txt}      82011 {c |}{res}      3,447        0.53       17.15
+{txt}      82012 {c |}{res}      3,627        0.56       17.71
+{txt}      92009 {c |}{res}      2,906        0.45       18.16
+{txt}      92010 {c |}{res}      3,014        0.46       18.62
+{txt}      92011 {c |}{res}      3,044        0.47       19.09
+{txt}      92012 {c |}{res}      3,146        0.48       19.57
+{txt}     102009 {c |}{res}        469        0.07       19.64
+{txt}     102010 {c |}{res}        501        0.08       19.72
+{txt}     102011 {c |}{res}        538        0.08       19.80
+{txt}     102012 {c |}{res}        505        0.08       19.88
+{txt}     112009 {c |}{res}        811        0.12       20.01
+{txt}     112010 {c |}{res}        861        0.13       20.14
+{txt}     112011 {c |}{res}        952        0.15       20.28
+{txt}     112012 {c |}{res}        991        0.15       20.44
+{txt}     122009 {c |}{res}      8,585        1.32       21.76
+{txt}     122010 {c |}{res}      8,424        1.29       23.05
+{txt}     122011 {c |}{res}      8,339        1.28       24.33
+{txt}     122012 {c |}{res}      8,621        1.33       25.66
+{txt}     132009 {c |}{res}      5,048        0.78       26.43
+{txt}     132010 {c |}{res}      4,944        0.76       27.19
+{txt}     132011 {c |}{res}      4,508        0.69       27.89
+{txt}     132012 {c |}{res}      4,901        0.75       28.64
+{txt}     152009 {c |}{res}        636        0.10       28.74
+{txt}     152010 {c |}{res}        621        0.10       28.83
+{txt}     152011 {c |}{res}        615        0.09       28.93
+{txt}     152012 {c |}{res}        659        0.10       29.03
+{txt}     162009 {c |}{res}        534        0.08       29.11
+{txt}     162010 {c |}{res}        517        0.08       29.19
+{txt}     162011 {c |}{res}        521        0.08       29.27
+{txt}     162012 {c |}{res}        526        0.08       29.35
+{txt}     172009 {c |}{res}      7,823        1.20       30.55
+{txt}     172010 {c |}{res}      7,801        1.20       31.75
+{txt}     172011 {c |}{res}      7,428        1.14       32.89
+{txt}     172012 {c |}{res}      7,788        1.20       34.09
+{txt}     182009 {c |}{res}      2,695        0.41       34.51
+{txt}     182010 {c |}{res}      2,698        0.41       34.92
+{txt}     182011 {c |}{res}      2,501        0.38       35.30
+{txt}     182012 {c |}{res}      2,578        0.40       35.70
+{txt}     192009 {c |}{res}      1,109        0.17       35.87
+{txt}     192010 {c |}{res}      1,145        0.18       36.05
+{txt}     192011 {c |}{res}      1,023        0.16       36.20
+{txt}     192012 {c |}{res}      1,114        0.17       36.38
+{txt}     202009 {c |}{res}      1,397        0.21       36.59
+{txt}     202010 {c |}{res}      1,372        0.21       36.80
+{txt}     202011 {c |}{res}      1,270        0.20       37.00
+{txt}     202012 {c |}{res}      1,358        0.21       37.21
+{txt}     212009 {c |}{res}      2,046        0.31       37.52
+{txt}     212010 {c |}{res}      1,933        0.30       37.82
+{txt}     212011 {c |}{res}      1,938        0.30       38.11
+{txt}     212012 {c |}{res}      2,036        0.31       38.43
+{txt}     222009 {c |}{res}      1,640        0.25       38.68
+{txt}     222010 {c |}{res}      1,597        0.25       38.93
+{txt}     222011 {c |}{res}      1,551        0.24       39.16
+{txt}     222012 {c |}{res}      1,649        0.25       39.42
+{txt}     232009 {c |}{res}        522        0.08       39.50
+{txt}     232010 {c |}{res}        566        0.09       39.58
+{txt}     232011 {c |}{res}        617        0.09       39.68
+{txt}     232012 {c |}{res}        575        0.09       39.77
+{txt}     242009 {c |}{res}      4,688        0.72       40.49
+{txt}     242010 {c |}{res}      4,905        0.75       41.24
+{txt}     242011 {c |}{res}      4,792        0.74       41.98
+{txt}     242012 {c |}{res}      4,954        0.76       42.74
+{txt}     252009 {c |}{res}      5,850        0.90       43.64
+{txt}     252010 {c |}{res}      6,160        0.95       44.59
+{txt}     252011 {c |}{res}      6,223        0.96       45.54
+{txt}     252012 {c |}{res}      6,201        0.95       46.50
+{txt}     262009 {c |}{res}      4,686        0.72       47.22
+{txt}     262010 {c |}{res}      4,579        0.70       47.92
+{txt}     262011 {c |}{res}      4,567        0.70       48.62
+{txt}     262012 {c |}{res}      4,661        0.72       49.34
+{txt}     272009 {c |}{res}      2,295        0.35       49.69
+{txt}     272010 {c |}{res}      2,360        0.36       50.05
+{txt}     272011 {c |}{res}      2,313        0.36       50.41
+{txt}     272012 {c |}{res}      2,304        0.35       50.76
+{txt}     282009 {c |}{res}      1,008        0.15       50.92
+{txt}     282010 {c |}{res}      1,043        0.16       51.08
+{txt}     282011 {c |}{res}        956        0.15       51.22
+{txt}     282012 {c |}{res}      1,018        0.16       51.38
+{txt}     292009 {c |}{res}      2,853        0.44       51.82
+{txt}     292010 {c |}{res}      2,908        0.45       52.27
+{txt}     292011 {c |}{res}      2,921        0.45       52.72
+{txt}     292012 {c |}{res}      2,821        0.43       53.15
+{txt}     302009 {c |}{res}        332        0.05       53.20
+{txt}     302010 {c |}{res}        380        0.06       53.26
+{txt}     302011 {c |}{res}        376        0.06       53.32
+{txt}     302012 {c |}{res}        393        0.06       53.38
+{txt}     312009 {c |}{res}        711        0.11       53.49
+{txt}     312010 {c |}{res}        719        0.11       53.60
+{txt}     312011 {c |}{res}        736        0.11       53.71
+{txt}     312012 {c |}{res}        831        0.13       53.84
+{txt}     322009 {c |}{res}      1,031        0.16       54.00
+{txt}     322010 {c |}{res}        994        0.15       54.15
+{txt}     322011 {c |}{res}        842        0.13       54.28
+{txt}     322012 {c |}{res}      1,012        0.16       54.43
+{txt}     332009 {c |}{res}        808        0.12       54.56
+{txt}     332010 {c |}{res}        884        0.14       54.69
+{txt}     332011 {c |}{res}        934        0.14       54.84
+{txt}     332012 {c |}{res}        984        0.15       54.99
+{txt}     342009 {c |}{res}      6,352        0.98       55.97
+{txt}     342010 {c |}{res}      6,471        0.99       56.96
+{txt}     342011 {c |}{res}      6,445        0.99       57.95
+{txt}     342012 {c |}{res}      6,499        1.00       58.95
+{txt}     352009 {c |}{res}        880        0.14       59.08
+{txt}     352010 {c |}{res}        919        0.14       59.23
+{txt}     352011 {c |}{res}        917        0.14       59.37
+{txt}     352012 {c |}{res}        967        0.15       59.52
+{txt}     362009 {c |}{res}     14,017        2.15       61.67
+{txt}     362010 {c |}{res}     14,450        2.22       63.89
+{txt}     362011 {c |}{res}     14,478        2.23       66.12
+{txt}     362012 {c |}{res}     14,622        2.25       68.36
+{txt}     372009 {c |}{res}      4,481        0.69       69.05
+{txt}     372010 {c |}{res}      4,433        0.68       69.73
+{txt}     372011 {c |}{res}      4,225        0.65       70.38
+{txt}     372012 {c |}{res}      4,717        0.72       71.11
+{txt}     382009 {c |}{res}        243        0.04       71.14
+{txt}     382010 {c |}{res}        200        0.03       71.18
+{txt}     382011 {c |}{res}        177        0.03       71.20
+{txt}     382012 {c |}{res}        226        0.03       71.24
+{txt}     392009 {c |}{res}      5,589        0.86       72.10
+{txt}     392010 {c |}{res}      5,606        0.86       72.96
+{txt}     392011 {c |}{res}      5,364        0.82       73.78
+{txt}     392012 {c |}{res}      5,408        0.83       74.61
+{txt}     402009 {c |}{res}      1,289        0.20       74.81
+{txt}     402010 {c |}{res}      1,281        0.20       75.01
+{txt}     402011 {c |}{res}      1,195        0.18       75.19
+{txt}     402012 {c |}{res}      1,233        0.19       75.38
+{txt}     412009 {c |}{res}      1,935        0.30       75.68
+{txt}     412010 {c |}{res}      1,886        0.29       75.97
+{txt}     412011 {c |}{res}      1,970        0.30       76.27
+{txt}     412012 {c |}{res}      2,118        0.33       76.60
+{txt}     422009 {c |}{res}      6,469        0.99       77.59
+{txt}     422010 {c |}{res}      6,541        1.01       78.60
+{txt}     422011 {c |}{res}      6,671        1.03       79.62
+{txt}     422012 {c |}{res}      6,845        1.05       80.67
+{txt}     442009 {c |}{res}        695        0.11       80.78
+{txt}     442010 {c |}{res}        679        0.10       80.89
+{txt}     442011 {c |}{res}        726        0.11       81.00
+{txt}     442012 {c |}{res}        777        0.12       81.12
+{txt}     452009 {c |}{res}      2,213        0.34       81.46
+{txt}     452010 {c |}{res}      2,170        0.33       81.79
+{txt}     452011 {c |}{res}      1,927        0.30       82.09
+{txt}     452012 {c |}{res}      2,178        0.33       82.42
+{txt}     462009 {c |}{res}        251        0.04       82.46
+{txt}     462010 {c |}{res}        282        0.04       82.50
+{txt}     462011 {c |}{res}        249        0.04       82.54
+{txt}     462012 {c |}{res}        253        0.04       82.58
+{txt}     472009 {c |}{res}      2,607        0.40       82.98
+{txt}     472010 {c |}{res}      2,743        0.42       83.40
+{txt}     472011 {c |}{res}      2,644        0.41       83.81
+{txt}     472012 {c |}{res}      2,855        0.44       84.25
+{txt}     482009 {c |}{res}     10,724        1.65       85.90
+{txt}     482010 {c |}{res}     10,946        1.68       87.58
+{txt}     482011 {c |}{res}     10,241        1.57       89.15
+{txt}     482012 {c |}{res}     11,201        1.72       90.87
+{txt}     492009 {c |}{res}      1,119        0.17       91.05
+{txt}     492010 {c |}{res}      1,159        0.18       91.22
+{txt}     492011 {c |}{res}      1,172        0.18       91.40
+{txt}     492012 {c |}{res}      1,257        0.19       91.60
+{txt}     502009 {c |}{res}        408        0.06       91.66
+{txt}     502010 {c |}{res}        411        0.06       91.72
+{txt}     502011 {c |}{res}        411        0.06       91.79
+{txt}     502012 {c |}{res}        403        0.06       91.85
+{txt}     512009 {c |}{res}      6,104        0.94       92.79
+{txt}     512010 {c |}{res}      6,108        0.94       93.73
+{txt}     512011 {c |}{res}      5,999        0.92       94.65
+{txt}     512012 {c |}{res}      6,670        1.03       95.67
+{txt}     532009 {c |}{res}      3,634        0.56       96.23
+{txt}     532010 {c |}{res}      3,798        0.58       96.82
+{txt}     532011 {c |}{res}      3,885        0.60       97.41
+{txt}     532012 {c |}{res}      3,774        0.58       97.99
+{txt}     542009 {c |}{res}        678        0.10       98.10
+{txt}     542010 {c |}{res}        705        0.11       98.20
+{txt}     542011 {c |}{res}        695        0.11       98.31
+{txt}     542012 {c |}{res}        710        0.11       98.42
+{txt}     552009 {c |}{res}      2,281        0.35       98.77
+{txt}     552010 {c |}{res}      2,312        0.36       99.13
+{txt}     552011 {c |}{res}      2,364        0.36       99.49
+{txt}     552012 {c |}{res}      2,407        0.37       99.86
+{txt}     562009 {c |}{res}        208        0.03       99.89
+{txt}     562010 {c |}{res}        231        0.04       99.93
+{txt}     562011 {c |}{res}        244        0.04       99.96
+{txt}     562012 {c |}{res}        228        0.04      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}    650,626      100.00
+{txt}
+{com}. *
+. * State-STEM fixed effects
+.  gen byte STEM_fields=0
+{txt}
+{com}.         replace STEM_fields=1 if (field_codes==2102 | (field_codes>=2401 & field_codes<=2599) | (field_codes>=3600 & field_codes<=3700) | (field_codes>=5000 & field_codes<=5098))
+{txt}(144,808 real changes made)
+
+{com}.  gen nonSTEM_fields=(STEM_fields==0)
+{txt}
+{com}.  forvalues i=1/56 {c -(}
+{txt}  2{com}.   gen byte s`i'=0
+{txt}  3{com}.         replace s`i'=1 if migplac1==`i'
+{txt}  4{com}.  {c )-}
+{txt}(1,107 real changes made)
+(226 real changes made)
+(0 real changes made)
+(1,944 real changes made)
+(598 real changes made)
+(12,693 real changes made)
+(0 real changes made)
+(2,266 real changes made)
+(1,345 real changes made)
+(259 real changes made)
+(843 real changes made)
+(5,268 real changes made)
+(2,875 real changes made)
+(0 real changes made)
+(384 real changes made)
+(401 real changes made)
+(4,702 real changes made)
+(1,818 real changes made)
+(920 real changes made)
+(881 real changes made)
+(1,079 real changes made)
+(1,044 real changes made)
+(333 real changes made)
+(2,357 real changes made)
+(3,681 real changes made)
+(2,762 real changes made)
+(1,504 real changes made)
+(642 real changes made)
+(1,879 real changes made)
+(272 real changes made)
+(570 real changes made)
+(641 real changes made)
+(505 real changes made)
+(2,777 real changes made)
+(478 real changes made)
+(7,453 real changes made)
+(2,939 real changes made)
+(209 real changes made)
+(3,346 real changes made)
+(857 real changes made)
+(1,305 real changes made)
+(3,948 real changes made)
+(0 real changes made)
+(456 real changes made)
+(1,332 real changes made)
+(222 real changes made)
+(1,671 real changes made)
+(7,236 real changes made)
+(851 real changes made)
+(239 real changes made)
+(3,938 real changes made)
+(0 real changes made)
+(2,371 real changes made)
+(408 real changes made)
+(1,525 real changes made)
+(180 real changes made)
+
+{com}.  forvalues i=1/56 {c -(}
+{txt}  2{com}.   gen s`i'_STEM=s`i'*STEM_fields
+{txt}  3{com}.   gen s`i'_nonSTEM=s`i'*nonSTEM_fields 
+{txt}  4{com}.  {c )-}
+{txt}
+{com}.  
+. set matsize 1000
+{txt}{bf:set matsize} ignored.
+{p 4 4 2}
+Matrix sizes are no longer limited by
+{bf:c(matsize)} in modern Statas.
+Matrix sizes are now limited by edition of Stata.
+See {help limits} for more details.
+{p_end}
+
+{com}. estimates clear
+{res}{txt}
+{com}. quietly {c -(}
+{txt}
+{com}. 
+. 
+. *** TABLE 6: Labor market performance of immigrants in ACS
+. ***
+. ***
+.  gen arvage=0
+{txt}
+{com}.         replace arvage=yrimmig-birthyr if citizen==3 
+{txt}(45,104 real changes made)
+
+{com}.  gen tmpst=0
+{txt}
+{com}.         replace tmpst=1 if citizen==3 & arvage>=18 & arvage<=22   // non-citizens who entered the US at an age between 18 and 22
+{txt}(8,930 real changes made)
+
+{com}.  gen tmpadult=0
+{txt}
+{com}.         replace tmpadult=1 if citizen==3 & arvage>=18   // non-citizens who entered the US at an age above 18
+{txt}(41,236 real changes made)
+
+{com}.         
+.  gen STEMocc=0
+{txt}
+{com}.         replace STEMocc=1 if (occ1990>=43 & occ1990<=59) | (occ1990>=64 & occ1990<=68) | (occ1990>=69 & occ1990<=106) | (occ1990>=203 & occ1990<=235)
+{txt}(109,037 real changes made)
+
+{com}.  gen ITocc=0
+{txt}
+{com}.         replace ITocc=1 if (occ1990>=64 & occ1990<=68) | occ1990==229   
+{txt}(31,633 real changes made)
+
+{com}. 
+. estimates clear
+{res}{txt}
+{com}. quietly {c -(}
+{txt}
+{com}. 
+. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\chris\OneDrive\Bureau\Author_s_reproduction_package\Data\Analysis_data\Demirci_CJE_2020.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}22 May 2021, 00:38:00
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
