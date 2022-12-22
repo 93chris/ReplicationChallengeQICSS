@@ -1,9 +1,15 @@
-cd "C:\Users\Murat Demirci\Dropbox\OPT -- Labor Market\Results_CJE\Codes"	
+*cd "C:\Users\Murat Demirci\Dropbox\OPT -- Labor Market\Results_CJE\Codes"	
+cd "C:\Users\chris\OneDrive\Bureau\Author_s_reproduction_package\Data\Analysis_data"
 
-log using Demirci_CJE_2020
+log using Demirci_CJE_2020, replace
 
 clear
 use Demirci_CJE_2020.dta  
+
+* The code contains commands that are incompatible with Stata 17 and probably with other versions of Stata. Version 16 is recommended.
+* "version 16" syntax allows you to use the features of Stata 16
+version 16
+
 
 *
 *** Generating control variables 
